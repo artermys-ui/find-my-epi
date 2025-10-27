@@ -1,7 +1,8 @@
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, Heart, Siren, Syringe, Phone, CheckCircle } from "lucide-react";
+import { AlertTriangle, Heart, Siren, Syringe, Phone, CheckCircle, ShieldCheck } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import epipenInstructions from "@/assets/epipen-instructions.jpg";
 
 const Education = () => {
   return (
@@ -12,12 +13,140 @@ const Education = () => {
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-foreground mb-2">Allergy Education</h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-muted-foreground mb-2">
               Learn about severe allergies, recognizing symptoms, and how to respond in emergencies
+            </p>
+            <p className="text-sm text-muted-foreground italic">
+              Information based on guidelines from the CDC, FDA, and EpiPen® official resources
             </p>
           </div>
 
-          {/* What is Anaphylaxis */}
+          {/* When to Use an EpiPen */}
+          <Card className="mb-6 border-primary/30 bg-primary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-2xl">
+                <Siren className="h-6 w-6 text-primary" />
+                When to Use an EpiPen
+              </CardTitle>
+              <CardDescription className="text-base">
+                Recognizing when epinephrine is needed can save a life
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="bg-background/50 p-4 rounded-lg">
+                <p className="font-semibold mb-3 text-lg">Use an EpiPen immediately if you notice:</p>
+                <ul className="list-disc list-inside space-y-2 ml-2">
+                  <li className="font-medium">Two or more body systems affected (e.g., skin AND breathing)</li>
+                  <li className="font-medium">Difficulty breathing, wheezing, or throat tightness</li>
+                  <li className="font-medium">Swelling of lips, tongue, or throat</li>
+                  <li className="font-medium">Significant drop in blood pressure or dizziness</li>
+                  <li className="font-medium">Severe abdominal pain or vomiting after allergen exposure</li>
+                  <li className="font-medium">Loss of consciousness or feeling like you might pass out</li>
+                </ul>
+              </div>
+              
+              <div className="bg-destructive/10 border border-destructive/30 p-4 rounded-lg">
+                <p className="font-bold text-lg mb-2 flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
+                  When in doubt, use it!
+                </p>
+                <p className="text-sm">
+                  The risks of delaying epinephrine far outweigh the risks of using it. According to the CDC, 
+                  early administration of epinephrine is critical in preventing fatal outcomes from anaphylaxis.
+                </p>
+              </div>
+
+              <p className="text-xs text-muted-foreground italic">
+                Source: Centers for Disease Control and Prevention (CDC) - Anaphylaxis Guidelines
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* How to Use an EpiPen */}
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-2xl">
+                <Syringe className="h-6 w-6 text-primary" />
+                How to Use an EpiPen
+              </CardTitle>
+              <CardDescription>
+                Follow these steps to properly administer an epinephrine auto-injector
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <img 
+                    src={epipenInstructions} 
+                    alt="EpiPen usage instructions diagram" 
+                    className="w-full rounded-lg border border-border shadow-sm"
+                  />
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="bg-muted/50 p-4 rounded-lg">
+                    <p className="font-semibold mb-3 text-lg">Step-by-Step Instructions:</p>
+                    <ol className="list-decimal list-inside space-y-3">
+                      <li className="font-medium">
+                        Remove the blue safety cap
+                        <p className="text-sm text-muted-foreground ml-6 mt-1">
+                          Pull it straight off - do not twist
+                        </p>
+                      </li>
+                      <li className="font-medium">
+                        Hold orange tip against outer thigh
+                        <p className="text-sm text-muted-foreground ml-6 mt-1">
+                          Can inject through clothing. Use at 90-degree angle
+                        </p>
+                      </li>
+                      <li className="font-medium">
+                        Push down hard until you hear a click
+                        <p className="text-sm text-muted-foreground ml-6 mt-1">
+                          You will hear and feel the injection start
+                        </p>
+                      </li>
+                      <li className="font-medium">
+                        Hold firmly for 3 seconds
+                        <p className="text-sm text-muted-foreground ml-6 mt-1">
+                          Count slowly: 1, 2, 3
+                        </p>
+                      </li>
+                      <li className="font-medium">
+                        Remove and massage area for 10 seconds
+                        <p className="text-sm text-muted-foreground ml-6 mt-1">
+                          Orange tip will extend to cover needle
+                        </p>
+                      </li>
+                      <li className="font-medium">
+                        Call 911 immediately
+                        <p className="text-sm text-muted-foreground ml-6 mt-1">
+                          Take the used EpiPen with you to the hospital
+                        </p>
+                      </li>
+                    </ol>
+                  </div>
+
+                  <div className="bg-primary/5 border border-primary/30 p-4 rounded-lg">
+                    <p className="font-semibold flex items-center gap-2 mb-2">
+                      <CheckCircle className="h-5 w-5 text-primary" />
+                      Important Safety Tips:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground ml-2">
+                      <li>Never put thumb over either end</li>
+                      <li>Do not inject into hands, feet, or buttocks</li>
+                      <li>Always carry two EpiPens if prescribed</li>
+                      <li>Keep at room temperature (not in car)</li>
+                      <li>Check expiration date regularly</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-xs text-muted-foreground italic">
+                Source: EpiPen® Official Usage Guidelines and FDA-Approved Instructions
+              </p>
+            </CardContent>
+          </Card>
           <Card className="mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-2xl">
@@ -46,10 +175,95 @@ const Education = () => {
                   <li>Blood transfusions</li>
                 </ul>
               </div>
+              <p className="text-xs text-muted-foreground italic">
+                Source: National Institute of Allergy and Infectious Diseases (NIAID), CDC
+              </p>
             </CardContent>
           </Card>
 
-          {/* Recognizing Symptoms */}
+          {/* Allergy Safety Tips */}
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-2xl">
+                <ShieldCheck className="h-6 w-6 text-primary" />
+                Allergy Safety Tips
+              </CardTitle>
+              <CardDescription>
+                Essential practices for managing severe allergies
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <h3 className="font-bold text-lg mb-3">Daily Prevention:</h3>
+                <ul className="grid md:grid-cols-2 gap-3">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Always carry your EpiPen - keep one at home, work, and in your bag</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Wear medical alert identification jewelry at all times</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Read all food labels carefully, even for familiar products</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Inform friends, family, and coworkers about your allergies</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Keep emergency contact information easily accessible</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Have an allergy action plan written and shared with loved ones</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-muted/50 p-4 rounded-lg">
+                <h3 className="font-bold text-lg mb-3">When Dining Out:</h3>
+                <ul className="space-y-2 list-disc list-inside ml-2">
+                  <li>Always inform restaurant staff about your allergies before ordering</li>
+                  <li>Ask about ingredients and cross-contamination prevention</li>
+                  <li>Avoid buffets and shared serving utensils when possible</li>
+                  <li>Consider calling ahead to restaurants to discuss your needs</li>
+                  <li>Carry your EpiPen to the table, not left in a bag or car</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-lg mb-3">For Parents and Caregivers:</h3>
+                <ul className="space-y-2 list-disc list-inside ml-2">
+                  <li>Educate teachers, coaches, and school staff about the child&apos;s allergy</li>
+                  <li>Ensure EpiPens are available at school, daycare, and during activities</li>
+                  <li>Teach children to recognize their own symptoms as early as possible</li>
+                  <li>Practice using a trainer EpiPen with your child</li>
+                  <li>Create a 504 plan or allergy action plan with the school</li>
+                  <li>Update emergency contacts and allergy action plans annually</li>
+                </ul>
+              </div>
+
+              <div className="bg-primary/5 border border-primary/30 p-4 rounded-lg">
+                <h3 className="font-bold text-lg mb-2">Medication Management:</h3>
+                <ul className="space-y-2 list-disc list-inside ml-2">
+                  <li>Check expiration dates monthly - expired EpiPens may not work effectively</li>
+                  <li>Store at room temperature (59-86°F / 15-30°C)</li>
+                  <li>Protect from light - keep in the carrier tube</li>
+                  <li>Do not refrigerate or leave in hot car</li>
+                  <li>Replace if solution is discolored or contains particles</li>
+                </ul>
+              </div>
+
+              <p className="text-xs text-muted-foreground italic">
+                Sources: Food Allergy Research & Education (FARE), American Academy of Allergy, Asthma & Immunology (AAAAI)
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* What is Anaphylaxis */}
           <Card className="mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-2xl">
@@ -117,10 +331,11 @@ const Education = () => {
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
+              <p className="text-xs text-muted-foreground italic">
+                Source: American College of Allergy, Asthma & Immunology (ACAAI)
+              </p>
             </CardContent>
           </Card>
-
-          {/* Emergency Response */}
           <Card className="mb-6 border-destructive/30 bg-destructive/5">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-2xl">
@@ -193,110 +408,9 @@ const Education = () => {
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* How to Use an EpiPen */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-2xl">
-                <Syringe className="h-6 w-6 text-primary" />
-                How to Use an EpiPen
-              </CardTitle>
-              <CardDescription>
-                Follow these steps to properly administer an epinephrine auto-injector
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="bg-muted/50 p-4 rounded-lg">
-                <p className="font-semibold mb-3">Step-by-Step Instructions:</p>
-                <ol className="list-decimal list-inside space-y-3">
-                  <li className="font-medium">
-                    Remove the EpiPen from the carrier tube
-                    <p className="text-sm text-muted-foreground ml-6 mt-1">
-                      Pull off the blue safety cap
-                    </p>
-                  </li>
-                  <li className="font-medium">
-                    Hold the EpiPen with orange tip pointing downward
-                    <p className="text-sm text-muted-foreground ml-6 mt-1">
-                      Form a fist around the unit with the orange tip pointing down
-                    </p>
-                  </li>
-                  <li className="font-medium">
-                    Place the orange tip against the outer thigh
-                    <p className="text-sm text-muted-foreground ml-6 mt-1">
-                      Can be given through clothing if necessary. Hold at 90-degree angle.
-                    </p>
-                  </li>
-                  <li className="font-medium">
-                    Push down hard until you hear a click
-                    <p className="text-sm text-muted-foreground ml-6 mt-1">
-                      Hold firmly in place for 3 seconds (count slowly: 1, 2, 3)
-                    </p>
-                  </li>
-                  <li className="font-medium">
-                    Remove and massage the injection area
-                    <p className="text-sm text-muted-foreground ml-6 mt-1">
-                      Massage the area for 10 seconds. The orange tip will extend to cover the needle.
-                    </p>
-                  </li>
-                  <li className="font-medium">
-                    Get emergency medical help immediately
-                    <p className="text-sm text-muted-foreground ml-6 mt-1">
-                      Call 911 or go to the nearest emergency room. Take the used EpiPen with you.
-                    </p>
-                  </li>
-                </ol>
-              </div>
-
-              <div className="bg-primary/5 border border-primary/30 p-4 rounded-lg">
-                <p className="font-semibold flex items-center gap-2 mb-2">
-                  <CheckCircle className="h-5 w-5 text-primary" />
-                  Important Tips:
-                </p>
-                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground ml-6">
-                  <li>Never put your thumb over either end of the EpiPen</li>
-                  <li>Do not inject into hands, feet, or buttocks</li>
-                  <li>Always carry two EpiPens if prescribed</li>
-                  <li>Check expiration date regularly</li>
-                  <li>Keep at room temperature, avoid extreme heat or cold</li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Prevention */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-2xl">
-                <CheckCircle className="h-6 w-6 text-primary" />
-                Prevention and Preparedness
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <h3 className="font-semibold mb-2">If You Have Known Allergies:</h3>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Always carry your EpiPen with you</li>
-                  <li>Wear medical alert identification</li>
-                  <li>Inform friends, family, and coworkers about your allergy</li>
-                  <li>Read food labels carefully</li>
-                  <li>Inform restaurants about your allergies when dining out</li>
-                  <li>Have an allergy action plan</li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="font-semibold mb-2">For Parents and Caregivers:</h3>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Educate teachers and school staff about the allergy</li>
-                  <li>Ensure EpiPens are available at school and during activities</li>
-                  <li>Teach children to recognize symptoms</li>
-                  <li>Practice using a trainer EpiPen</li>
-                  <li>Update allergy action plans regularly</li>
-                </ul>
-              </div>
+              <p className="text-xs text-muted-foreground italic">
+                Source: CDC Emergency Response Guidelines, American Heart Association (AHA)
+              </p>
             </CardContent>
           </Card>
 
