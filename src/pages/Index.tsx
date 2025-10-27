@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
 import heroImage from "@/assets/hero-epipen.jpg";
+import communitySafety from "@/assets/community-safety.jpg";
+import mapFeature from "@/assets/map-feature.jpg";
+import addLocationFeature from "@/assets/add-location-feature.jpg";
 
 const Index = () => {
   return (
@@ -55,7 +58,14 @@ const Index = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <Card className="text-center hover:shadow-lg transition-shadow">
+            <Card className="text-center hover:shadow-lg transition-shadow overflow-hidden">
+              <div className="h-48 overflow-hidden">
+                <img 
+                  src={mapFeature} 
+                  alt="Find EpiPen locations on interactive map" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <CardHeader>
                 <div className="mx-auto bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
                   <MapPin className="h-8 w-8 text-primary" />
@@ -69,7 +79,14 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center hover:shadow-lg transition-shadow">
+            <Card className="text-center hover:shadow-lg transition-shadow overflow-hidden">
+              <div className="h-48 overflow-hidden">
+                <img 
+                  src={addLocationFeature} 
+                  alt="Add new EpiPen locations to help community" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <CardHeader>
                 <div className="mx-auto bg-secondary/10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
                   <Plus className="h-8 w-8 text-secondary" />
@@ -101,33 +118,44 @@ const Index = () => {
       </section>
 
       <section className="py-16">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <Card className="border-primary/30 bg-primary/5">
-            <CardHeader>
-              <CardTitle className="text-2xl flex items-center gap-2">
-                <AlertTriangle className="h-6 w-6 text-primary" />
-                About Severe Allergies
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 text-muted-foreground">
-              <p>
-                Anaphylaxis is a severe, potentially life-threatening allergic reaction that can occur within seconds or minutes of exposure to an allergen. Common triggers include foods (peanuts, tree nuts, shellfish), insect stings, medications, and latex.
-              </p>
-              <p className="font-semibold text-foreground">
-                Symptoms of anaphylaxis include:
-              </p>
-              <ul className="list-disc list-inside space-y-1 ml-4">
-                <li>Difficulty breathing or wheezing</li>
-                <li>Swelling of the face, lips, or throat</li>
-                <li>Rapid pulse or drop in blood pressure</li>
-                <li>Dizziness or loss of consciousness</li>
-                <li>Hives, itching, or flushed skin</li>
-              </ul>
-              <p className="font-semibold text-foreground">
-                If you suspect anaphylaxis, use an EpiPen immediately and call 911. Time is critical.
-              </p>
-            </CardContent>
-          </Card>
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <img 
+                src={communitySafety} 
+                alt="Diverse community members ensuring allergy safety together" 
+                className="rounded-2xl shadow-2xl"
+              />
+            </div>
+            <div>
+              <Card className="border-primary/30 bg-primary/5">
+                <CardHeader>
+                  <CardTitle className="text-2xl flex items-center gap-2">
+                    <AlertTriangle className="h-6 w-6 text-primary" />
+                    About Severe Allergies
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4 text-muted-foreground">
+                  <p>
+                    Anaphylaxis is a severe, potentially life-threatening allergic reaction that can occur within seconds or minutes of exposure to an allergen. Common triggers include foods (peanuts, tree nuts, shellfish), insect stings, medications, and latex.
+                  </p>
+                  <p className="font-semibold text-foreground">
+                    Symptoms of anaphylaxis include:
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 ml-4">
+                    <li>Difficulty breathing or wheezing</li>
+                    <li>Swelling of the face, lips, or throat</li>
+                    <li>Rapid pulse or drop in blood pressure</li>
+                    <li>Dizziness or loss of consciousness</li>
+                    <li>Hives, itching, or flushed skin</li>
+                  </ul>
+                  <p className="font-semibold text-foreground">
+                    If you suspect anaphylaxis, use an EpiPen immediately and call 911. Time is critical.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </section>
 
