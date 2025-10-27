@@ -5,6 +5,7 @@ import { MapPin, Navigation as NavigationIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Navigation from "@/components/Navigation";
 
 interface EpiPenLocation {
@@ -14,10 +15,12 @@ interface EpiPenLocation {
   description: string | null;
   latitude: number;
   longitude: number;
+  state: string;
 }
 
 const Map = () => {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [selectedState, setSelectedState] = useState<string>("All");
   const { toast } = useToast();
 
   const { data: locations, isLoading } = useQuery({
@@ -61,13 +64,17 @@ const Map = () => {
     return R * c;
   };
 
-  const sortedLocations = userLocation && locations
-    ? [...locations].sort((a, b) => {
+  const filteredLocations = locations?.filter(location => 
+    selectedState === "All" || location.state === selectedState
+  );
+
+  const sortedLocations = userLocation && filteredLocations
+    ? [...filteredLocations].sort((a, b) => {
         const distA = calculateDistance(userLocation.lat, userLocation.lng, a.latitude, a.longitude);
         const distB = calculateDistance(userLocation.lat, userLocation.lng, b.latitude, b.longitude);
         return distA - distB;
       })
-    : locations;
+    : filteredLocations;
 
   return (
     <div className="min-h-screen bg-background">
@@ -78,15 +85,30 @@ const Map = () => {
           <p className="text-muted-foreground">Find the nearest EpiPen location</p>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <button
             onClick={getUserLocation}
             className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
           >
             Get My Location
           </button>
+          
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">Filter by state:</span>
+            <Select value={selectedState} onValueChange={setSelectedState}>
+              <SelectTrigger className="w-[180px] bg-background">
+                <SelectValue placeholder="Select state" />
+              </SelectTrigger>
+              <SelectContent className="bg-background z-50">
+                <SelectItem value="All">All States</SelectItem>
+                <SelectItem value="NY">New York</SelectItem>
+                <SelectItem value="NJ">New Jersey</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
           {userLocation && (
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Your location: {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
             </p>
           )}
@@ -115,11 +137,10 @@ const Map = () => {
                       <MapPin className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
                       <span>{location.name}</span>
                     </CardTitle>
-                    {distance && (
-                      <CardDescription className="font-semibold text-primary">
-                        {distance.toFixed(2)} km away
-                      </CardDescription>
-                    )}
+                    <CardDescription>
+                      {location.state}
+                      {distance && ` • ${distance.toFixed(2)} km away`}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm mb-2">{location.address}</p>
