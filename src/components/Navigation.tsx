@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Map, Plus, Phone, Menu, X } from "lucide-react";
+import { Home, Map, Plus, Phone, Menu, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ const Navigation = () => {
     { to: "/", icon: Home, label: "Home" },
     { to: "/map", icon: Map, label: "Map" },
     { to: "/add", icon: Plus, label: "Add Location" },
+    { to: "/education", icon: BookOpen, label: "Education" },
     { to: "/emergency", icon: Phone, label: "Emergency" },
   ];
 
