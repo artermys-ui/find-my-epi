@@ -58,61 +58,67 @@ const Index = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <Card className="text-center hover:shadow-lg transition-shadow overflow-hidden">
-              <div className="h-48 overflow-hidden">
-                <img 
-                  src={mapFeature} 
-                  alt="Find EpiPen locations on interactive map" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <CardHeader>
-                <div className="mx-auto bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                  <MapPin className="h-8 w-8 text-primary" />
+            <Link to="/map" className="block">
+              <Card className="text-center hover:shadow-lg transition-shadow overflow-hidden cursor-pointer h-full">
+                <div className="h-48 overflow-hidden">
+                  <img 
+                    src={mapFeature} 
+                    alt="Find EpiPen locations on interactive map" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <CardTitle>Find Locations</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-base">
-                  View a map of nearby EpiPen locations. Get directions and distance information to find the closest one.
-                </CardDescription>
-              </CardContent>
-            </Card>
+                <CardHeader>
+                  <div className="mx-auto bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                    <MapPin className="h-8 w-8 text-primary" />
+                  </div>
+                  <CardTitle>Find Locations</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-base">
+                    View a map of nearby EpiPen locations. Get directions and distance information to find the closest one.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            </Link>
 
-            <Card className="text-center hover:shadow-lg transition-shadow overflow-hidden">
-              <div className="h-48 overflow-hidden">
-                <img 
-                  src={addLocationFeature} 
-                  alt="Add new EpiPen locations to help community" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <CardHeader>
-                <div className="mx-auto bg-secondary/10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                  <Plus className="h-8 w-8 text-secondary" />
+            <Link to="/add" className="block">
+              <Card className="text-center hover:shadow-lg transition-shadow overflow-hidden cursor-pointer h-full">
+                <div className="h-48 overflow-hidden">
+                  <img 
+                    src={addLocationFeature} 
+                    alt="Add new EpiPen locations to help community" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <CardTitle>Add New Spots</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-base">
-                  Help the community by adding EpiPen locations you know about. It takes less than a minute.
-                </CardDescription>
-              </CardContent>
-            </Card>
+                <CardHeader>
+                  <div className="mx-auto bg-secondary/10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                    <Plus className="h-8 w-8 text-secondary" />
+                  </div>
+                  <CardTitle>Add New Spots</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-base">
+                    Help the community by adding EpiPen locations you know about. It takes less than a minute.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            </Link>
 
-            <Card className="text-center hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="mx-auto bg-accent/10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                  <Phone className="h-8 w-8 text-accent" />
-                </div>
-                <CardTitle>Emergency Access</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-base">
-                  Quick access to 911 and step-by-step EpiPen usage instructions for critical situations.
-                </CardDescription>
-              </CardContent>
-            </Card>
+            <Link to="/emergency" className="block">
+              <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer h-full">
+                <CardHeader>
+                  <div className="mx-auto bg-accent/10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                    <Phone className="h-8 w-8 text-accent" />
+                  </div>
+                  <CardTitle>Emergency Access</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-base">
+                    Quick access to 911 and step-by-step EpiPen usage instructions for critical situations.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
         </div>
       </section>
