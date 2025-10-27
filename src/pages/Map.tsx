@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { MapPin } from "lucide-react";
+import { MapPin, Navigation as NavigationIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
 
 interface EpiPenLocation {
@@ -121,12 +122,19 @@ const Map = () => {
                   <CardContent>
                     <p className="text-sm mb-2">{location.address}</p>
                     {location.description && (
-                      <p className="text-sm text-muted-foreground">{location.description}</p>
+                      <p className="text-sm text-muted-foreground mb-4">{location.description}</p>
                     )}
-                    <div className="mt-4 text-xs text-muted-foreground">
-                      <p>Lat: {location.latitude.toFixed(6)}</p>
-                      <p>Lng: {location.longitude.toFixed(6)}</p>
-                    </div>
+                    <Button
+                      onClick={() => {
+                        const url = `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`;
+                        window.open(url, '_blank');
+                      }}
+                      className="w-full"
+                      variant="outline"
+                    >
+                      <NavigationIcon className="h-4 w-4 mr-2" />
+                      Get Directions
+                    </Button>
                   </CardContent>
                 </Card>
               );
