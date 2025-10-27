@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { MapPin, Navigation as NavigationIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import Navigation from "@/components/Navigation";
 
 interface EpiPenLocation {
@@ -17,6 +18,7 @@ interface EpiPenLocation {
 
 const Map = () => {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const { toast } = useToast();
 
   const { data: locations, isLoading } = useQuery({
     queryKey: ["epipen-locations"],
@@ -125,9 +127,28 @@ const Map = () => {
                       <p className="text-sm text-muted-foreground mb-4">{location.description}</p>
                     )}
                     <Button
-                      onClick={() => {
+                      onClick={async () => {
                         const url = `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`;
-                        window.open(url, '_blank');
+                        const coordinates = `${location.latitude}, ${location.longitude}`;
+                        
+                        try {
+                          window.open(url, '_blank');
+                        } catch (error) {
+                          // Fallback: copy coordinates to clipboard
+                          try {
+                            await navigator.clipboard.writeText(coordinates);
+                            toast({
+                              title: "Coordinates copied!",
+                              description: `${coordinates} - Paste into Google Maps`,
+                            });
+                          } catch (clipboardError) {
+                            toast({
+                              title: "Unable to open maps",
+                              description: `Coordinates: ${coordinates}`,
+                              variant: "destructive",
+                            });
+                          }
+                        }
                       }}
                       className="w-full"
                       variant="outline"
