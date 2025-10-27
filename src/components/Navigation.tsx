@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Map, Plus, Phone } from "lucide-react";
+import { Home, Map, Plus, Phone, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 
 const Navigation = () => {
   const location = useLocation();
+  const [open, setOpen] = useState(false);
 
   const links = [
     { to: "/", icon: Home, label: "Home" },
@@ -23,7 +27,8 @@ const Navigation = () => {
             <span className="font-bold text-xl">FindMyEpi</span>
           </Link>
 
-          <div className="flex gap-1">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex gap-1">
             {links.map((link) => {
               const Icon = link.icon;
               const isActive = location.pathname === link.to;
@@ -40,11 +45,45 @@ const Navigation = () => {
                   )}
                 >
                   <Icon className="h-4 w-4" />
-                  <span className="hidden sm:inline font-medium">{link.label}</span>
+                  <span className="font-medium">{link.label}</span>
                 </Link>
               );
             })}
           </div>
+
+          {/* Mobile Navigation */}
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild className="md:hidden">
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-64">
+              <div className="flex flex-col gap-4 mt-8">
+                {links.map((link) => {
+                  const Icon = link.icon;
+                  const isActive = location.pathname === link.to;
+                  
+                  return (
+                    <Link
+                      key={link.to}
+                      to={link.to}
+                      onClick={() => setOpen(false)}
+                      className={cn(
+                        "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-lg",
+                        isActive
+                          ? "bg-primary text-primary-foreground"
+                          : "hover:bg-muted text-foreground"
+                      )}
+                    >
+                      <Icon className="h-5 w-5" />
+                      <span className="font-medium">{link.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </nav>
