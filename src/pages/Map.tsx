@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { MapPin, Navigation as NavigationIcon } from "lucide-react";
+import { MapPin, Navigation as NavigationIcon, Copy } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -143,40 +143,59 @@ const Map = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm mb-2">{location.address}</p>
+                    <p className="text-sm mb-4">{location.address}</p>
                     {location.description && (
                       <p className="text-sm text-muted-foreground mb-4">{location.description}</p>
                     )}
-                    <Button
-                      onClick={async () => {
-                        const url = `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`;
-                        const coordinates = `${location.latitude}, ${location.longitude}`;
-                        
-                        try {
-                          window.open(url, '_blank');
-                        } catch (error) {
-                          // Fallback: copy coordinates to clipboard
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={async () => {
                           try {
-                            await navigator.clipboard.writeText(coordinates);
+                            await navigator.clipboard.writeText(location.address);
                             toast({
-                              title: "Coordinates copied!",
-                              description: `${coordinates} - Paste into Google Maps`,
+                              title: "Address copied!",
+                              description: "Paste it into Google Maps or your navigation app",
                             });
-                          } catch (clipboardError) {
+                          } catch (error) {
                             toast({
-                              title: "Unable to open maps",
-                              description: `Coordinates: ${coordinates}`,
+                              title: "Copy failed",
+                              description: location.address,
                               variant: "destructive",
                             });
                           }
-                        }
-                      }}
-                      className="w-full"
-                      variant="outline"
-                    >
-                      <NavigationIcon className="h-4 w-4 mr-2" />
-                      Get Directions
-                    </Button>
+                        }}
+                        className="flex-1"
+                        variant="outline"
+                      >
+                        <Copy className="h-4 w-4 mr-2" />
+                        Copy Address
+                      </Button>
+                      <Button
+                        onClick={async () => {
+                          const coordinates = `${location.latitude},${location.longitude}`;
+                          const url = `https://www.google.com/maps/search/?api=1&query=${coordinates}`;
+                          
+                          try {
+                            await navigator.clipboard.writeText(url);
+                            toast({
+                              title: "Maps link copied!",
+                              description: "Paste to open in Google Maps",
+                            });
+                          } catch (error) {
+                            toast({
+                              title: "Copy failed",
+                              description: coordinates,
+                              variant: "destructive",
+                            });
+                          }
+                        }}
+                        className="flex-1"
+                        variant="default"
+                      >
+                        <NavigationIcon className="h-4 w-4 mr-2" />
+                        Copy Maps Link
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               );
