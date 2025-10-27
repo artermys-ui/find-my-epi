@@ -85,8 +85,8 @@ const Index = () => {
 
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardHeader>
-                <div className="mx-auto bg-destructive/10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                  <Phone className="h-8 w-8 text-destructive" />
+                <div className="mx-auto bg-accent/10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                  <Phone className="h-8 w-8 text-accent" />
                 </div>
                 <CardTitle>Emergency Access</CardTitle>
               </CardHeader>
@@ -102,10 +102,10 @@ const Index = () => {
 
       <section className="py-16">
         <div className="container mx-auto px-4 max-w-4xl">
-          <Card className="border-destructive bg-destructive/5">
+          <Card className="border-primary/30 bg-primary/5">
             <CardHeader>
               <CardTitle className="text-2xl flex items-center gap-2">
-                <AlertTriangle className="h-6 w-6 text-destructive" />
+                <AlertTriangle className="h-6 w-6 text-primary" />
                 About Severe Allergies
               </CardTitle>
             </CardHeader>
@@ -123,7 +123,7 @@ const Index = () => {
                 <li>Dizziness or loss of consciousness</li>
                 <li>Hives, itching, or flushed skin</li>
               </ul>
-              <p className="font-semibold text-destructive">
+              <p className="font-semibold text-foreground">
                 If you suspect anaphylaxis, use an EpiPen immediately and call 911. Time is critical.
               </p>
             </CardContent>
