@@ -4,6 +4,7 @@ import { Home, Map, Plus, Phone, Menu, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/logo.svg";
 
 const Navigation = () => {
   const location = useLocation();
@@ -21,11 +22,8 @@ const Navigation = () => {
     <nav className="sticky top-0 z-50 bg-card border-b border-border shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="bg-primary text-primary-foreground p-2 rounded-lg">
-              <Phone className="h-5 w-5" />
-            </div>
-            <span className="font-bold text-xl">FindMyEpi</span>
+          <Link to="/" className="flex items-center">
+            <img src={logo} alt="FindMyEpi Logo" className="h-10" />
           </Link>
 
           {/* Desktop Navigation */}
