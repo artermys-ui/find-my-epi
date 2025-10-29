@@ -1,11 +1,9 @@
-import { Phone, AlertTriangle, MessageSquare, Plus, Edit, Trash2 } from "lucide-react";
+import { Phone, AlertTriangle, MessageSquare, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import Navigation from "@/components/Navigation";
 import {
@@ -14,11 +12,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 interface EmergencyContact {
-  id: string;
   name: string;
   phone_number: string;
 }
@@ -28,129 +24,39 @@ const Emergency = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
-  const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check authentication and fetch emergency contact
-    const initAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        navigate("/auth");
-        return;
-      }
+    // Load emergency contact from localStorage
+    const saved = localStorage.getItem("emergencyContact");
+    if (saved) {
+      setEmergencyContact(JSON.parse(saved));
+    }
+  }, []);
 
-      setUserId(session.user.id);
-      await fetchEmergencyContact(session.user.id);
-    };
+  const handleSaveContact = () => {
+    if (!name || !phoneNumber) return;
 
-    initAuth();
+    const contact = { name, phone_number: phoneNumber };
+    localStorage.setItem("emergencyContact", JSON.stringify(contact));
+    setEmergencyContact(contact);
+    setIsDialogOpen(false);
+    setName("");
+    setPhoneNumber("");
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (!session) {
-        navigate("/auth");
-      } else {
-        setUserId(session.user.id);
-        fetchEmergencyContact(session.user.id);
-      }
+    toast({
+      title: "Success",
+      description: "Emergency contact saved",
     });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
-
-  const fetchEmergencyContact = async (uid: string) => {
-    const { data, error } = await supabase
-      .from("emergency_contacts")
-      .select("*")
-      .eq("user_id", uid)
-      .maybeSingle();
-
-    if (error) {
-      console.error("Error fetching emergency contact:", error);
-      return;
-    }
-
-    if (data) {
-      setEmergencyContact(data);
-    }
   };
 
-  const handleSaveContact = async () => {
-    if (!name || !phoneNumber || !userId) return;
-
-    setLoading(true);
-    try {
-      if (emergencyContact) {
-        // Update existing contact
-        const { error } = await supabase
-          .from("emergency_contacts")
-          .update({ name, phone_number: phoneNumber })
-          .eq("id", emergencyContact.id);
-
-        if (error) throw error;
-
-        toast({
-          title: "Success",
-          description: "Emergency contact updated",
-        });
-      } else {
-        // Create new contact
-        const { error } = await supabase
-          .from("emergency_contacts")
-          .insert({ user_id: userId, name, phone_number: phoneNumber });
-
-        if (error) throw error;
-
-        toast({
-          title: "Success",
-          description: "Emergency contact saved",
-        });
-      }
-
-      await fetchEmergencyContact(userId);
-      setIsDialogOpen(false);
-      setName("");
-      setPhoneNumber("");
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDeleteContact = async () => {
-    if (!emergencyContact) return;
-
-    setLoading(true);
-    try {
-      const { error } = await supabase
-        .from("emergency_contacts")
-        .delete()
-        .eq("id", emergencyContact.id);
-
-      if (error) throw error;
-
-      setEmergencyContact(null);
-      toast({
-        title: "Success",
-        description: "Emergency contact removed",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+  const handleDeleteContact = () => {
+    localStorage.removeItem("emergencyContact");
+    setEmergencyContact(null);
+    toast({
+      title: "Success",
+      description: "Emergency contact removed",
+    });
   };
 
   const handleCall911 = () => {
@@ -232,7 +138,6 @@ const Emergency = () => {
                           variant="outline"
                           size="icon"
                           onClick={handleDeleteContact}
-                          disabled={loading}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -249,72 +154,11 @@ const Emergency = () => {
                   </Button>
                 </div>
               ) : (
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button size="lg" className="w-full">
-                      <Plus className="h-5 w-5 mr-2" />
-                      Add Emergency Contact
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>
-                        {emergencyContact ? "Edit Emergency Contact" : "Add Emergency Contact"}
-                      </DialogTitle>
-                      <DialogDescription>
-                        This person will receive emergency alerts when you need help
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="contact-name">Name</Label>
-                        <Input
-                          id="contact-name"
-                          placeholder="John Doe"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          className="mt-1.5"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="contact-phone">Phone Number</Label>
-                        <Input
-                          id="contact-phone"
-                          type="tel"
-                          placeholder="+1234567890"
-                          value={phoneNumber}
-                          onChange={(e) => setPhoneNumber(e.target.value)}
-                          className="mt-1.5"
-                        />
-                      </div>
-                      <Button
-                        onClick={handleSaveContact}
-                        disabled={!name || !phoneNumber || loading}
-                        className="w-full"
-                      >
-                        {loading ? "Saving..." : "Save Contact"}
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              )}
-            </CardContent>
-          </Card>
-
-          {emergencyContact && (
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Edit Emergency Contact</DialogTitle>
-                  <DialogDescription>
-                    Update your emergency contact information
-                  </DialogDescription>
-                </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="edit-name">Name</Label>
+                    <Label htmlFor="contact-name">Name</Label>
                     <Input
-                      id="edit-name"
+                      id="contact-name"
                       placeholder="John Doe"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
@@ -322,9 +166,9 @@ const Emergency = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="edit-phone">Phone Number</Label>
+                    <Label htmlFor="contact-phone">Phone Number</Label>
                     <Input
-                      id="edit-phone"
+                      id="contact-phone"
                       type="tel"
                       placeholder="+1234567890"
                       value={phoneNumber}
@@ -334,15 +178,56 @@ const Emergency = () => {
                   </div>
                   <Button
                     onClick={handleSaveContact}
-                    disabled={!name || !phoneNumber || loading}
+                    disabled={!name || !phoneNumber}
                     className="w-full"
                   >
-                    {loading ? "Saving..." : "Save Changes"}
+                    Save Emergency Contact
                   </Button>
                 </div>
-              </DialogContent>
-            </Dialog>
-          )}
+              )}
+            </CardContent>
+          </Card>
+
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Emergency Contact</DialogTitle>
+                <DialogDescription>
+                  Update your emergency contact information
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="edit-name">Name</Label>
+                  <Input
+                    id="edit-name"
+                    placeholder="John Doe"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="mt-1.5"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-phone">Phone Number</Label>
+                  <Input
+                    id="edit-phone"
+                    type="tel"
+                    placeholder="+1234567890"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="mt-1.5"
+                  />
+                </div>
+                <Button
+                  onClick={handleSaveContact}
+                  disabled={!name || !phoneNumber}
+                  className="w-full"
+                >
+                  Save Changes
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
 
           <Card>
             <CardHeader>
