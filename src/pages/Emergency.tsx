@@ -1,23 +1,175 @@
-import { Phone, AlertTriangle, MessageSquare } from "lucide-react";
+import { Phone, AlertTriangle, MessageSquare, Plus, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import Navigation from "@/components/Navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+interface EmergencyContact {
+  id: string;
+  name: string;
+  phone_number: string;
+}
 
 const Emergency = () => {
+  const [emergencyContact, setEmergencyContact] = useState<EmergencyContact | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  
+  const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Check authentication and fetch emergency contact
+    const initAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        navigate("/auth");
+        return;
+      }
+
+      setUserId(session.user.id);
+      await fetchEmergencyContact(session.user.id);
+    };
+
+    initAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        navigate("/auth");
+      } else {
+        setUserId(session.user.id);
+        fetchEmergencyContact(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  const fetchEmergencyContact = async (uid: string) => {
+    const { data, error } = await supabase
+      .from("emergency_contacts")
+      .select("*")
+      .eq("user_id", uid)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Error fetching emergency contact:", error);
+      return;
+    }
+
+    if (data) {
+      setEmergencyContact(data);
+    }
+  };
+
+  const handleSaveContact = async () => {
+    if (!name || !phoneNumber || !userId) return;
+
+    setLoading(true);
+    try {
+      if (emergencyContact) {
+        // Update existing contact
+        const { error } = await supabase
+          .from("emergency_contacts")
+          .update({ name, phone_number: phoneNumber })
+          .eq("id", emergencyContact.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Emergency contact updated",
+        });
+      } else {
+        // Create new contact
+        const { error } = await supabase
+          .from("emergency_contacts")
+          .insert({ user_id: userId, name, phone_number: phoneNumber });
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Emergency contact saved",
+        });
+      }
+
+      await fetchEmergencyContact(userId);
+      setIsDialogOpen(false);
+      setName("");
+      setPhoneNumber("");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteContact = async () => {
+    if (!emergencyContact) return;
+
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from("emergency_contacts")
+        .delete()
+        .eq("id", emergencyContact.id);
+
+      if (error) throw error;
+
+      setEmergencyContact(null);
+      toast({
+        title: "Success",
+        description: "Emergency contact removed",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleCall911 = () => {
     window.location.href = "tel:911";
   };
 
   const handleTextContact = () => {
-    if (phoneNumber) {
+    if (emergencyContact) {
       const message = encodeURIComponent("EMERGENCY: I'm having an allergic reaction and need help. Please call 911.");
-      window.location.href = `sms:${phoneNumber}?body=${message}`;
+      window.location.href = `sms:${emergencyContact.phone_number}?body=${message}`;
     }
+  };
+
+  const openEditDialog = () => {
+    if (emergencyContact) {
+      setName(emergencyContact.name);
+      setPhoneNumber(emergencyContact.phone_number);
+    }
+    setIsDialogOpen(true);
   };
 
   return (
@@ -52,34 +204,145 @@ const Emergency = () => {
 
           <Card className="mb-6">
             <CardHeader className="text-center pb-4">
-              <CardTitle className="text-2xl">Text Emergency Contact</CardTitle>
-              <CardDescription>Send a quick alert to someone you trust</CardDescription>
+              <CardTitle className="text-2xl">Emergency Contact</CardTitle>
+              <CardDescription>
+                {emergencyContact
+                  ? "Send a quick alert to your emergency contact"
+                  : "Add an emergency contact to enable quick alerts"}
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="phone">Contact Phone Number</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="Enter phone number"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="mt-1.5"
-                  />
+              {emergencyContact ? (
+                <div className="space-y-4">
+                  <div className="p-4 bg-muted rounded-lg border border-border">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-lg">{emergencyContact.name}</h3>
+                        <p className="text-muted-foreground">{emergencyContact.phone_number}</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={openEditDialog}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={handleDeleteContact}
+                          disabled={loading}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                  <Button
+                    size="lg"
+                    onClick={handleTextContact}
+                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                  >
+                    <MessageSquare className="h-5 w-5 mr-2" />
+                    Send Emergency Text to {emergencyContact.name}
+                  </Button>
                 </div>
-                <Button
-                  size="lg"
-                  onClick={handleTextContact}
-                  disabled={!phoneNumber}
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                >
-                  <MessageSquare className="h-5 w-5 mr-2" />
-                  Send Emergency Text
-                </Button>
-              </div>
+              ) : (
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button size="lg" className="w-full">
+                      <Plus className="h-5 w-5 mr-2" />
+                      Add Emergency Contact
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>
+                        {emergencyContact ? "Edit Emergency Contact" : "Add Emergency Contact"}
+                      </DialogTitle>
+                      <DialogDescription>
+                        This person will receive emergency alerts when you need help
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="contact-name">Name</Label>
+                        <Input
+                          id="contact-name"
+                          placeholder="John Doe"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className="mt-1.5"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="contact-phone">Phone Number</Label>
+                        <Input
+                          id="contact-phone"
+                          type="tel"
+                          placeholder="+1234567890"
+                          value={phoneNumber}
+                          onChange={(e) => setPhoneNumber(e.target.value)}
+                          className="mt-1.5"
+                        />
+                      </div>
+                      <Button
+                        onClick={handleSaveContact}
+                        disabled={!name || !phoneNumber || loading}
+                        className="w-full"
+                      >
+                        {loading ? "Saving..." : "Save Contact"}
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
             </CardContent>
           </Card>
+
+          {emergencyContact && (
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Edit Emergency Contact</DialogTitle>
+                  <DialogDescription>
+                    Update your emergency contact information
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="edit-name">Name</Label>
+                    <Input
+                      id="edit-name"
+                      placeholder="John Doe"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="mt-1.5"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="edit-phone">Phone Number</Label>
+                    <Input
+                      id="edit-phone"
+                      type="tel"
+                      placeholder="+1234567890"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      className="mt-1.5"
+                    />
+                  </div>
+                  <Button
+                    onClick={handleSaveContact}
+                    disabled={!name || !phoneNumber || loading}
+                    className="w-full"
+                  >
+                    {loading ? "Saving..." : "Save Changes"}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
 
           <Card>
             <CardHeader>
