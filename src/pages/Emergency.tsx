@@ -1,11 +1,23 @@
-import { Phone, AlertTriangle } from "lucide-react";
+import { Phone, AlertTriangle, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
 import Navigation from "@/components/Navigation";
 
 const Emergency = () => {
+  const [phoneNumber, setPhoneNumber] = useState("");
+  
   const handleCall911 = () => {
     window.location.href = "tel:911";
+  };
+
+  const handleTextContact = () => {
+    if (phoneNumber) {
+      const message = encodeURIComponent("EMERGENCY: I'm having an allergic reaction and need help. Please call 911.");
+      window.location.href = `sms:${phoneNumber}?body=${message}`;
+    }
   };
 
   return (
@@ -35,6 +47,37 @@ const Emergency = () => {
                 <Phone className="h-8 w-8 mr-3" />
                 Call 911
               </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="mb-6">
+            <CardHeader className="text-center pb-4">
+              <CardTitle className="text-2xl">Text Emergency Contact</CardTitle>
+              <CardDescription>Send a quick alert to someone you trust</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="phone">Contact Phone Number</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="Enter phone number"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="mt-1.5"
+                  />
+                </div>
+                <Button
+                  size="lg"
+                  onClick={handleTextContact}
+                  disabled={!phoneNumber}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                >
+                  <MessageSquare className="h-5 w-5 mr-2" />
+                  Send Emergency Text
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
