@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import Navigation from "@/components/Navigation";
+import heroAddLocation from "@/assets/hero-add-location.jpg";
 
 const AddLocation = () => {
   const navigate = useNavigate();
@@ -76,12 +77,28 @@ const AddLocation = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
+      
+      <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src={heroAddLocation} 
+            alt="Community collaboration to add EpiPen locations"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60" />
+        </div>
+        <div className="relative z-10 container mx-auto px-4 text-center">
+          <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-4">
+            Add EpiPen Location
+          </h1>
+          <p className="text-xl text-muted-foreground">
+            Help others by adding a new EpiPen location to our community map
+          </p>
+        </div>
+      </section>
+
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <div className="mb-6">
-            <h1 className="text-4xl font-bold text-foreground mb-2">Add EpiPen Location</h1>
-            <p className="text-muted-foreground">Help others by adding a new EpiPen location</p>
-          </div>
 
           <Card>
             <CardHeader>

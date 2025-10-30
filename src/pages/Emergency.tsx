@@ -13,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import heroEmergency from "@/assets/hero-emergency.jpg";
 
 interface EmergencyContact {
   name: string;
@@ -81,15 +82,29 @@ const Emergency = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
+      
+      <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src={heroEmergency} 
+            alt="Emergency medical assistance and care"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60" />
+        </div>
+        <div className="relative z-10 container mx-auto px-4 text-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <AlertTriangle className="h-12 w-12 text-destructive" />
+            <h1 className="text-5xl md:text-6xl font-bold text-foreground">Emergency</h1>
+          </div>
+          <p className="text-xl text-muted-foreground">
+            Quick access to emergency services and EpiPen instructions
+          </p>
+        </div>
+      </section>
+
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-6 text-center">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <AlertTriangle className="h-8 w-8 text-destructive" />
-              <h1 className="text-4xl font-bold text-foreground">Emergency</h1>
-            </div>
-            <p className="text-muted-foreground">Quick access to emergency services and EpiPen instructions</p>
-          </div>
 
           <Card className="mb-6 border-destructive bg-destructive/5">
             <CardHeader className="text-center pb-4">

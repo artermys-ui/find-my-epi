@@ -3,23 +3,34 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { AlertTriangle, Heart, Siren, Syringe, Phone, CheckCircle, ShieldCheck } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import epipenInstructions from "@/assets/epipen-instructions.jpg";
+import heroEducation from "@/assets/hero-education.jpg";
 
 const Education = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       
+      <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src={heroEducation} 
+            alt="Allergy education and medical learning resources"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60" />
+        </div>
+        <div className="relative z-10 container mx-auto px-4 text-center">
+          <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-4">
+            Allergy Education
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Learn about severe allergies, recognizing symptoms, and how to respond in emergencies
+          </p>
+        </div>
+      </section>
+
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-2">Allergy Education</h1>
-            <p className="text-lg text-muted-foreground mb-2">
-              Learn about severe allergies, recognizing symptoms, and how to respond in emergencies
-            </p>
-            <p className="text-sm text-muted-foreground italic">
-              Information based on guidelines from the CDC, FDA, and EpiPen® official resources
-            </p>
-          </div>
 
           {/* When to Use an EpiPen */}
           <Card className="mb-6 border-primary/30 bg-primary/5">

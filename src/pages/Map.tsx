@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Navigation from "@/components/Navigation";
+import heroMap from "@/assets/hero-map.jpg";
 
 interface EpiPenLocation {
   id: string;
@@ -79,11 +80,27 @@ const Map = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-4xl font-bold text-foreground mb-2">EpiPen Locations</h1>
-          <p className="text-muted-foreground">Find the nearest EpiPen location</p>
+      
+      <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src={heroMap} 
+            alt="Interactive map with EpiPen location markers"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60" />
         </div>
+        <div className="relative z-10 container mx-auto px-4 text-center">
+          <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-4">
+            EpiPen Locations
+          </h1>
+          <p className="text-xl text-muted-foreground">
+            Find the nearest EpiPen location when every second counts
+          </p>
+        </div>
+      </section>
+
+      <main className="container mx-auto px-4 py-8">
 
         <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <button
