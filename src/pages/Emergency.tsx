@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import heroEmergency from "@/assets/hero-emergency.jpg";
+import { z } from "zod";
 
 interface EmergencyContact {
   name: string;
@@ -38,7 +39,27 @@ const Emergency = () => {
   const handleSaveContact = () => {
     if (!name || !phoneNumber) return;
 
-    const contact = { name, phone_number: phoneNumber };
+    // Validate input
+    const contactSchema = z.object({
+      name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
+      phone_number: z.string().trim().regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format (e.g., +1234567890)")
+    });
+
+    const result = contactSchema.safeParse({ 
+      name: name.trim(), 
+      phone_number: phoneNumber.trim() 
+    });
+
+    if (!result.success) {
+      toast({
+        title: "Invalid input",
+        description: result.error.errors[0].message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const contact = { name: result.data.name, phone_number: result.data.phone_number };
     localStorage.setItem("emergencyContact", JSON.stringify(contact));
     setEmergencyContact(contact);
     setIsDialogOpen(false);

@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import Navigation from "@/components/Navigation";
 import heroAddLocation from "@/assets/hero-add-location.jpg";
+import { z } from "zod";
 
 const AddLocation = () => {
   const navigate = useNavigate();
@@ -65,9 +66,34 @@ const AddLocation = () => {
       return;
     }
 
-    setIsSubmitting(true);
+    // Validate input
+    const locationSchema = z.object({
+      name: z.string().trim().min(1, "Name is required").max(200, "Name must be less than 200 characters"),
+      address: z.string().trim().min(5, "Address must be at least 5 characters").max(500, "Address must be less than 500 characters"),
+      description: z.string().trim().max(1000, "Description must be less than 1000 characters").nullable(),
+      latitude: z.number().min(-90, "Latitude must be between -90 and 90").max(90, "Latitude must be between -90 and 90"),
+      longitude: z.number().min(-180, "Longitude must be between -180 and 180").max(180, "Longitude must be between -180 and 180")
+    });
+
+    const lat = parseFloat(formData.latitude);
+    const lng = parseFloat(formData.longitude);
+
+    if (isNaN(lat) || isNaN(lng)) {
+      toast.error("Invalid coordinates. Please enter valid numbers.");
+      return;
+    }
 
     try {
+      const validated = locationSchema.parse({
+        name: formData.name.trim(),
+        address: formData.address.trim(),
+        description: formData.description.trim() || null,
+        latitude: lat,
+        longitude: lng
+      });
+
+      setIsSubmitting(true);
+
       if (!userId) {
         toast.error("Please sign in to add locations");
         navigate("/auth");
@@ -75,11 +101,11 @@ const AddLocation = () => {
       }
 
       const { error } = await supabase.from("epipen_locations").insert({
-        name: formData.name,
-        address: formData.address,
-        description: formData.description || null,
-        latitude: parseFloat(formData.latitude),
-        longitude: parseFloat(formData.longitude),
+        name: validated.name,
+        address: validated.address,
+        description: validated.description,
+        latitude: validated.latitude,
+        longitude: validated.longitude,
         user_id: userId,
       });
 
@@ -88,8 +114,12 @@ const AddLocation = () => {
       toast.success("EpiPen location added successfully!");
       navigate("/map");
     } catch (error) {
-      console.error("Error adding location:", error);
-      toast.error("Failed to add location. Please try again.");
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+      } else {
+        console.error("Error adding location:", error);
+        toast.error("Failed to add location. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }
