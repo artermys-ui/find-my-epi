@@ -13,7 +13,7 @@ const Navigation = () => {
   const links = [
     { to: "/", icon: Home, label: "Home" },
     { to: "/map", icon: Map, label: "Map" },
-    { to: "/add", icon: Plus, label: "Add Location" },
+    { to: "/add-location", icon: Plus, label: "Add Location" },
     { to: "/education", icon: BookOpen, label: "Education" },
     { to: "/emergency", icon: Phone, label: "Emergency" },
   ];
