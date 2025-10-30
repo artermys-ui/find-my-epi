@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import Navigation from "@/components/Navigation";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -78,8 +79,10 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      <div className="flex items-center justify-center p-4 pt-20">
+        <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>{isLogin ? "Sign In" : "Create Account"}</CardTitle>
           <CardDescription>
@@ -133,6 +136,7 @@ const Auth = () => {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };
