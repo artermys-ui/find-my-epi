@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { MapPin } from "lucide-react";
@@ -14,6 +14,7 @@ import heroAddLocation from "@/assets/hero-add-location.jpg";
 const AddLocation = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     address: "",
@@ -21,6 +22,19 @@ const AddLocation = () => {
     latitude: "",
     longitude: "",
   });
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Please sign in to add locations");
+        navigate("/auth");
+        return;
+      }
+      setUserId(session.user.id);
+    };
+    checkAuth();
+  }, [navigate]);
 
   const handleGetCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -54,12 +68,19 @@ const AddLocation = () => {
     setIsSubmitting(true);
 
     try {
+      if (!userId) {
+        toast.error("Please sign in to add locations");
+        navigate("/auth");
+        return;
+      }
+
       const { error } = await supabase.from("epipen_locations").insert({
         name: formData.name,
         address: formData.address,
         description: formData.description || null,
         latitude: parseFloat(formData.latitude),
         longitude: parseFloat(formData.longitude),
+        user_id: userId,
       });
 
       if (error) throw error;
